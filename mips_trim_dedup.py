@@ -3,6 +3,7 @@
 import sys
 from itertools import izip_longest, izip
 import gzip
+import contextlib
 
 def reverse_complement(seq):
     """
@@ -84,7 +85,13 @@ if __name__ == "__main__":
     duplicate = 0
 
     # Open input and output files
-    with gzip.open(fasta_1_file, 'r') as f1, gzip.open(fasta_2_file, 'r') as f2, gzip.open(fasta_1_file_out, 'w') as write_f1, gzip.open(fasta_2_file_out, 'w') as write_f2:
+    #with gzip.open(fasta_1_file, 'r') as f1, gzip.open(fasta_2_file, 'r') as f2, gzip.open(fasta_1_file_out, 'w') as write_f1, gzip.open(fasta_2_file_out, 'w') as write_f2:
+    with contextlib.nested(
+        gzip.open(fasta_1_file, 'r'),
+        gzip.open(fasta_2_file, 'r'),
+        gzip.open(fasta_1_file_out, 'w'),
+        gzip.open(fasta_2_file_out, 'w')
+        ) as (f1, f2, write_f1, write_f2):
         # Read in both fasta files per 4 lines id seq + qual
         for fasta_1_lines, fasta_2_lines in izip(grouper(f1, 4, ''), grouper(f2, 4, '')):
             total += 1
