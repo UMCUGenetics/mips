@@ -12,7 +12,7 @@ def find_fastq(fastq_pattern, sample_dir):
 
 if __name__ == "__main__":
     # Parse arguments
-    if len(sys.argv) <= 3:
+    if len(sys.argv) != 4:
         print "python qsub_mips_trim_dedup.py /path/to/design.txt /path/to/raw_data/sequencer/run/Unaligned/project /path/to/output/folder"
         sys.exit()
 

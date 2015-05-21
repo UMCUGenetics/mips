@@ -65,7 +65,7 @@ def grouper(iterable, n, fillvalue=None):
 if __name__ == "__main__":
 
     # Parse arguments
-    if len(sys.argv) <= 1:
+    if len(sys.argv) != 4:
         print "python mips_trim_dedup.py design.txt R1.fastq R2.fastq"
         sys.exit()
 
