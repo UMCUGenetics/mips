@@ -61,6 +61,17 @@ def grouper(iterable, n, fillvalue=None):
     args = [iter(iterable)] * n
     return izip_longest(*args, fillvalue=fillvalue)
 
+class FixedGzip(gzip.GzipFile):
+    """
+    Fix gzip class to work with contextlib.nested in python 2.6
+    """
+    def __enter__(self):
+        if self.fileobj is None:
+            raise ValueError("I/O operation on closed GzipFile object")
+        return self
+
+    def __exit__(self, *args):
+        self.close()
 
 if __name__ == "__main__":
 
@@ -85,12 +96,11 @@ if __name__ == "__main__":
     duplicate = 0
 
     # Open input and output files
-    #with gzip.open(fasta_1_file, 'r') as f1, gzip.open(fasta_2_file, 'r') as f2, gzip.open(fasta_1_file_out, 'w') as write_f1, gzip.open(fasta_2_file_out, 'w') as write_f2:
     with contextlib.nested(
-        gzip.open(fasta_1_file, 'r'),
-        gzip.open(fasta_2_file, 'r'),
-        gzip.open(fasta_1_file_out, 'w'),
-        gzip.open(fasta_2_file_out, 'w')
+        FixedGzip(fasta_1_file, 'r'),
+        FixedGzip(fasta_2_file, 'r'),
+        FixedGzip(fasta_1_file_out, 'w'),
+        FixedGzip(fasta_2_file_out, 'w')
         ) as (f1, f2, write_f1, write_f2):
         # Read in both fasta files per 4 lines id seq + qual
         for fasta_1_lines, fasta_2_lines in izip(grouper(f1, 4, ''), grouper(f2, 4, '')):
