@@ -1,5 +1,5 @@
 # mips
-Scripts/tools to work with mip experiments.
+Scripts/tools for working with mip experiments.
 
 # Usage
 ## Per sample
