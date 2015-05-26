@@ -137,4 +137,4 @@ if __name__ == "__main__":
 
     print 'mip\tread_count\tdup_count'
     for mip in mips:
-        print mip, mips[mip]['count'], mips[mip]['dup_count']
+        print '{0}\t{1}\t{2}'.format(mip, mips[mip]['count'], mips[mip]['dup_count'])
