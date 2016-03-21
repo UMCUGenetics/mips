@@ -25,7 +25,7 @@ if __name__ == "__main__":
 	    with open(log_file_path, 'r') as f:
 		log_data = f.read().split('\n')[4:]
 		for mip_data in log_data:
-		    mip_data = mip_data.split(' ')
+		    mip_data = mip_data.split('\t')
 		    if len(mip_data) != 3:
 			continue
 		    else:

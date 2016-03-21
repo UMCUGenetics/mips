@@ -106,9 +106,9 @@ if __name__ == "__main__":
         for fasta_1_lines, fasta_2_lines in izip(grouper(f1, 4, ''), grouper(f2, 4, '')):
             total += 1
             for mip in mips:
-                if fasta_2_lines[1].startswith(mips[mip]['ext_probe'],5) and fasta_1_lines[1].startswith(mips[mip]['lig_probe_revcom']):
+                if fasta_2_lines[1].startswith(mips[mip]['ext_probe'],6) and fasta_1_lines[1].startswith(mips[mip]['lig_probe_revcom']):
                     match += 1
-                    uuid = fasta_2_lines[1][0:5]
+                    uuid = fasta_2_lines[1][0:6] # uuid length
                     # Check duplicate reads, uuid must be unique per mip.
                     if uuid in mips[mip]['uuids']:
                         duplicate += 1
