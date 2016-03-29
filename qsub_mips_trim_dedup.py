@@ -40,4 +40,4 @@ if __name__ == "__main__":
 	
 	# Generate command and submit to cluster
         command = "python {0}/mips_trim_dedup.py {1} {2} {3}".format(mips_trim_dedup_path, design_file, r1_fastq, r2_fastq)
-        subprocess.call("echo {0} | qsub -pe threaded 1 -q veryshort -wd {1} -e {2} -o {2}".format(command, output_dir, sample_log_path), shell=True)
+        subprocess.call("echo {0} | qsub -pe threaded 1 -l h_rt=1:0:0 -l h_vmem=2G -wd {1} -e {2} -o {2}".format(command, output_dir, sample_log_path), shell=True)

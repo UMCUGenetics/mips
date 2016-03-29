@@ -4,11 +4,7 @@ import sys
 import os
 import fnmatch
 import subprocess
-
-def find_fastq(fastq_pattern, sample_dir):
-    for file in os.listdir(sample_dir):
-        if fnmatch.fnmatch(file, fastq_pattern):
-            return os.path.abspath('{0}/{1}'.format(sample_dir, file))
+import glob
 
 if __name__ == "__main__":
     # Parse arguments
@@ -20,18 +16,23 @@ if __name__ == "__main__":
     raw_data_dir = sys.argv[2]
     output_dir = sys.argv[3]
 
+    mips_trim_dedup_path = os.path.dirname(os.path.realpath(__file__))
+
     if not os.path.exists(output_dir):
 	os.makedirs(output_dir)
 
     # Trim and dedup per sample
     for sample_dir in os.listdir(raw_data_dir):
         sample_dir_path = raw_data_dir + "/" + sample_dir
-        sample_log_path = "{0}/{1}.log".format(output_dir, sample_dir)
-        r1_fastq = find_fastq('*_R1_*.fastq.gz',sample_dir_path)
-        r2_fastq = find_fastq('*_R2_*.fastq.gz',sample_dir_path)
+        
+        # Per lane
+        for r1_fastq in glob.glob('{0}/*R1_*.fastq.gz'.format(sample_dir_path)):
+	    r1_fastq_path = os.path.abspath(r1_fastq)
+	    r2_fastq_path = r1_fastq_path.replace('_R1_','_R2_')
+	    lane = r1_fastq_path.split('_')[-3]
+	    sample_lane = "{0}_{1}".format(sample_dir, lane)
+	    log_file = "{0}/{1}.log".format(output_dir, sample_lane)
 
-        mips_trim_dedup_path = os.path.dirname(os.path.realpath(__file__))
-
-        # Generate command and submit to cluster
-        command = "python {0}/mips_trim_dedup.py {1} {2} {3}".format(mips_trim_dedup_path, design_file, r1_fastq, r2_fastq)
-        subprocess.call("echo {0} | qsub -pe threaded 1 -q veryshort -wd {1} -e {2} -o {2}".format(command, output_dir, sample_log_path), shell=True)
+	    # Generate command and submit to cluster
+	    command = "python {0}/mips_trim_dedup.py {1} {2} {3}".format(mips_trim_dedup_path, design_file, r1_fastq_path, r2_fastq_path)
+	    subprocess.call("echo {0} | qsub -pe threaded 1 -l h_rt=1:0:0 -l h_vmem=2G -wd {1} -e {2} -o {2} -N {3}".format(command, output_dir, log_file, sample_lane), shell=True)
