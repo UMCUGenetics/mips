@@ -25,14 +25,20 @@ if __name__ == "__main__":
     for sample_dir in os.listdir(raw_data_dir):
         sample_dir_path = raw_data_dir + "/" + sample_dir
         
-        # Per lane
+        r1_fastq_paths = []
+        r2_fastq_paths = []
+        
+        # Find lanes
         for r1_fastq in glob.glob('{0}/*R1_*.fastq.gz'.format(sample_dir_path)):
-	    r1_fastq_path = os.path.abspath(r1_fastq)
-	    r2_fastq_path = r1_fastq_path.replace('_R1_','_R2_')
-	    lane = r1_fastq_path.split('_')[-3]
-	    sample_lane = "{0}_{1}".format(sample_dir, lane)
-	    log_file = "{0}/{1}.log".format(output_dir, sample_lane)
+	    r1_fastq_paths.append(os.path.abspath(r1_fastq))
+	    r2_fastq_paths.append(os.path.abspath(r1_fastq).replace('_R1_','_R2_'))
+	
+	log_file = "{0}/{1}.log".format(output_dir, sample_dir)
 
-	    # Generate command and submit to cluster
-	    command = "python {0}/mips_trim_dedup.py {1} {2} {3}".format(mips_trim_dedup_path, design_file, r1_fastq_path, r2_fastq_path)
-	    subprocess.call("echo {0} | qsub -pe threaded 1 -l h_rt=1:0:0 -l h_vmem=2G -wd {1} -e {2} -o {2} -N {3}".format(command, output_dir, log_file, sample_lane), shell=True)
+	# Generate command and submit to cluster
+	command = "python {0}/mips_trim_merge_dedup.py --design_file {1} -r1 {2} -r2 {3}".format(
+	    mips_trim_dedup_path,
+	    design_file, 
+	    ' '.join(r1_fastq_paths),
+	    ' '.join(r2_fastq_paths))
+	subprocess.call("echo {0} | qsub -pe threaded 1 -l h_rt=1:0:0 -l h_vmem=2G -wd {1} -e {2} -o {2} -N {3}".format(command, output_dir, log_file, sample_dir), shell=True)
