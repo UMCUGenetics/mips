@@ -76,15 +76,16 @@ class FixedGzip(gzip.GzipFile):
 if __name__ == "__main__":
 
     # Parse arguments
-    if len(sys.argv) != 4:
-        print "python mips_trim_dedup.py design.txt R1.fastq R2.fastq"
+    if len(sys.argv) != 5:
+        print "python mips_trim_dedup.py design.txt uuid_length R1.fastq R2.fastq"
         sys.exit()
 
     design_file = sys.argv[1]
     mips = parse_design(design_file)
+    uuid_length = sys.argv[2]
 
-    fasta_1_file = sys.argv[2]
-    fasta_2_file = sys.argv[3]
+    fasta_1_file = sys.argv[3]
+    fasta_2_file = sys.argv[4]
 
     fasta_1_file_out = fasta_1_file.split('/')
     fasta_1_file_out = "trimmed-dedup-"+fasta_1_file_out[-1]
@@ -106,9 +107,9 @@ if __name__ == "__main__":
         for fasta_1_lines, fasta_2_lines in izip(grouper(f1, 4, ''), grouper(f2, 4, '')):
             total += 1
             for mip in mips:
-                if fasta_2_lines[1].startswith(mips[mip]['ext_probe'],6) and fasta_1_lines[1].startswith(mips[mip]['lig_probe_revcom']):
+                if fasta_2_lines[1].startswith(mips[mip]['ext_probe'],uuid_length) and fasta_1_lines[1].startswith(mips[mip]['lig_probe_revcom']):
                     match += 1
-                    uuid = fasta_2_lines[1][0:6] # uuid length
+                    uuid = fasta_2_lines[1][0:uuid_length]
                     # Check duplicate reads, uuid must be unique per mip.
                     if uuid in mips[mip]['uuids']:
                         duplicate += 1

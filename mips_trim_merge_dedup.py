@@ -83,10 +83,11 @@ if __name__ == "__main__":
     parser.add_argument('-d','--design_file', type=str, help='Mips design file', required=True)
     parser.add_argument('-r1','--r1_fastq', type=str, help='R1 fastq', required=True, nargs='*')
     parser.add_argument('-r2','--r2_fastq', type=str, help='R2 fastq', required=True, nargs='*')
+    parser.add_argument('-l','--uuid_length', type=int, help='UUID length', required=True)
     args = parser.parse_args()
 
     mips = parse_design(args.design_file)
-
+    unique_uuids = set({})
     #Output files
     fastq_1_file_out = "trimmed-dedup-"+args.r1_fastq[0].split('/')[-1]
     fastq_2_file_out = "trimmed-dedup-"+args.r2_fastq[0].split('/')[-1]
@@ -115,9 +116,9 @@ if __name__ == "__main__":
                 for fastq_1_lines, fastq_2_lines in izip(grouper(f1, 4, ''), grouper(f2, 4, '')):
                     total += 1
                     for mip in mips:
-                        if fastq_2_lines[1].startswith(mips[mip]['ext_probe'],6) and fastq_1_lines[1].startswith(mips[mip]['lig_probe_revcom']):
+                        if fastq_2_lines[1].startswith(mips[mip]['ext_probe'],args.uuid_length) and fastq_1_lines[1].startswith(mips[mip]['lig_probe_revcom']):
                             match += 1
-                            uuid = fastq_2_lines[1][0:6] # uuid length
+                            uuid = fastq_2_lines[1][0:args.uuid_length]
                             # Check duplicate reads, uuid must be unique per mip.
                             if uuid in mips[mip]['uuids']:
                                 duplicate += 1
@@ -138,12 +139,17 @@ if __name__ == "__main__":
                                 ## Print fastq to new trimmed and dedupped fastq's.
                                 write_f1.write(''.join(fastq_1_lines))
                                 write_f2.write(''.join(fastq_2_lines))
+
+                            #Track unique uuids in sample
+                            if uuid not in unique_uuids:
+                                unique_uuids.add(uuid)
                             break #A read can only belong to one mip thus break.
 
     print 'match:', match
     print 'duplicate', duplicate
     print 'total', total
+    print 'sample_unique_uuid_count', len(unique_uuids)
 
-    print 'mip\tread_count\tdup_count'
+    print 'mip\tread_count\tdup_count\tuuids'
     for mip in mips:
-        print '{0}\t{1}\t{2}'.format(mip, mips[mip]['count'], mips[mip]['dup_count'])
+        print '{0}\t{1}\t{2}\t{3}'.format(mip, mips[mip]['count'], mips[mip]['dup_count'], ','.join(mips[mip]['uuids']))
