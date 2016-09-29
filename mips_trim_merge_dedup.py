@@ -84,9 +84,9 @@ if __name__ == "__main__":
     parser.add_argument('-r1','--r1_fastq', type=str, help='R1 fastq', required=True, nargs='*')
     parser.add_argument('-r2','--r2_fastq', type=str, help='R2 fastq', required=True, nargs='*')
     args = parser.parse_args()
-    
+
     mips = parse_design(args.design_file)
-    
+
     #Output files
     fastq_1_file_out = "trimmed-dedup-"+args.r1_fastq[0].split('/')[-1]
     fastq_2_file_out = "trimmed-dedup-"+args.r2_fastq[0].split('/')[-1]
@@ -98,47 +98,47 @@ if __name__ == "__main__":
         FixedGzip(fastq_2_file_out, 'w')
         ) as (write_f1, write_f2):
 
-	# Statistics variables
-	total = 0
-	match = 0
-	duplicate = 0
+        # Statistics variables
+        total = 0
+        match = 0
+        duplicate = 0
 
-	#Loop over fastq files
-	for fastq_1_file, fastq_2_file in zip(args.r1_fastq, args.r2_fastq):
+        #Loop over fastq files
+        for fastq_1_file, fastq_2_file in zip(args.r1_fastq, args.r2_fastq):
 
-	    # Open input files
-	    with contextlib.nested(
-		FixedGzip(fastq_1_file, 'r'),
-		FixedGzip(fastq_2_file, 'r'),
-		) as (f1, f2):
-		# Read in both fastq files per 4 lines [id, seq, +, qual]
-		for fastq_1_lines, fastq_2_lines in izip(grouper(f1, 4, ''), grouper(f2, 4, '')):
-		    total += 1
-		    for mip in mips:
-			if fastq_2_lines[1].startswith(mips[mip]['ext_probe'],6) and fastq_1_lines[1].startswith(mips[mip]['lig_probe_revcom']):
-			    match += 1
-			    uuid = fastq_2_lines[1][0:6] # uuid length
-			    # Check duplicate reads, uuid must be unique per mip.
-			    if uuid in mips[mip]['uuids']:
-				duplicate += 1
-				mips[mip]['dup_count'] += 1
-			    else :
-				mips[mip]['uuids'].add(uuid)
-				mips[mip]['count'] += 1
-				#Trim fastq
-				fastq_1_lines = list(fastq_1_lines)
-				fastq_2_lines = list(fastq_2_lines)
+            # Open input files
+            with contextlib.nested(
+                FixedGzip(fastq_1_file, 'r'),
+                FixedGzip(fastq_2_file, 'r'),
+                ) as (f1, f2):
+                # Read in both fastq files per 4 lines [id, seq, +, qual]
+                for fastq_1_lines, fastq_2_lines in izip(grouper(f1, 4, ''), grouper(f2, 4, '')):
+                    total += 1
+                    for mip in mips:
+                        if fastq_2_lines[1].startswith(mips[mip]['ext_probe'],6) and fastq_1_lines[1].startswith(mips[mip]['lig_probe_revcom']):
+                            match += 1
+                            uuid = fastq_2_lines[1][0:6] # uuid length
+                            # Check duplicate reads, uuid must be unique per mip.
+                            if uuid in mips[mip]['uuids']:
+                                duplicate += 1
+                                mips[mip]['dup_count'] += 1
+                            else :
+                                mips[mip]['uuids'].add(uuid)
+                                mips[mip]['count'] += 1
+                                #Trim fastq
+                                fastq_1_lines = list(fastq_1_lines)
+                                fastq_2_lines = list(fastq_2_lines)
 
-				fastq_1_lines[1] = fastq_1_lines[1][len(mips[mip]['lig_probe_revcom']):]#seq
-				fastq_1_lines[3] = fastq_1_lines[3][len(mips[mip]['lig_probe_revcom']):]#qual
+                                fastq_1_lines[1] = fastq_1_lines[1][len(mips[mip]['lig_probe_revcom']):]#seq
+                                fastq_1_lines[3] = fastq_1_lines[3][len(mips[mip]['lig_probe_revcom']):]#qual
 
-				fastq_2_lines[1] = fastq_2_lines[1][len(mips[mip]['ext_probe'])+5:]#seq
-				fastq_2_lines[3] = fastq_2_lines[3][len(mips[mip]['ext_probe'])+5:]#qual
+                                fastq_2_lines[1] = fastq_2_lines[1][len(mips[mip]['ext_probe'])+5:]#seq
+                                fastq_2_lines[3] = fastq_2_lines[3][len(mips[mip]['ext_probe'])+5:]#qual
 
-				## Print fastq to new trimmed and dedupped fastq's.
-				write_f1.write(''.join(fastq_1_lines))
-				write_f2.write(''.join(fastq_2_lines))
-			    break #A read can only belong to one mip thus break.
+                                ## Print fastq to new trimmed and dedupped fastq's.
+                                write_f1.write(''.join(fastq_1_lines))
+                                write_f2.write(''.join(fastq_2_lines))
+                            break #A read can only belong to one mip thus break.
 
     print 'match:', match
     print 'duplicate', duplicate
