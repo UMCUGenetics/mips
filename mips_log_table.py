@@ -23,10 +23,10 @@ if __name__ == "__main__":
             sample = log_file[:-4]
             samples.append(sample)
             with open(log_file_path, 'r') as f:
-                log_data = f.read().split('\n')[4:]
+                log_data = f.read().split('\n')[5:]
                 for mip_data in log_data:
                     mip_data = mip_data.split('\t')
-                    if len(mip_data) != 3:
+                    if len(mip_data) != 4:
                         continue
                     else:
                         mip_name = mip_data[0]
