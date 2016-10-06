@@ -9,7 +9,7 @@ import glob
 if __name__ == "__main__":
     # Parse arguments
     if len(sys.argv) != 5:
-        print "python qsub_mips_trim_dedup.py uuid_length uuid_read(R1,R2) /path/to/design.txt /path/to/raw_data/sequencer/run/Unaligned/project /path/to/output/folder"
+        print "python qsub_mips_trim_dedup.py /path/to/design.txt uuid_length uuid_read(R1,R2) /path/to/raw_data/sequencer/run/Unaligned/project /path/to/output/folder"
         sys.exit()
 
     design_file = os.path.abspath(sys.argv[1])
