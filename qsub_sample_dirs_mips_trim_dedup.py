@@ -45,4 +45,4 @@ if __name__ == "__main__":
             uuid_read,
             ' '.join(r1_fastq_paths),
             ' '.join(r2_fastq_paths))
-        subprocess.call("echo {0} | qsub -pe threaded 1 -l h_rt=1:0:0 -l h_vmem=2G -wd {1} -e {2} -o {2} -N {3}".format(command, output_dir, log_file, sample_dir), shell=True)
+        subprocess.call("echo {0} | qsub -pe threaded 1 -l h_rt=1:0:0 -l h_vmem=2G -wd {1} -e {2} -o {2} -N mips_{3}".format(command, output_dir, log_file, sample_dir), shell=True)
