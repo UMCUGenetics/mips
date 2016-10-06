@@ -124,8 +124,8 @@ if __name__ == "__main__":
                         fasta_1_lines[1] = fasta_1_lines[1][len(mips[mip]['lig_probe_revcom']):]#seq
                         fasta_1_lines[3] = fasta_1_lines[3][len(mips[mip]['lig_probe_revcom']):]#qual
 
-                        fasta_2_lines[1] = fasta_2_lines[1][len(mips[mip]['ext_probe'])+5:]#seq
-                        fasta_2_lines[3] = fasta_2_lines[3][len(mips[mip]['ext_probe'])+5:]#qual
+                        fasta_2_lines[1] = fasta_2_lines[1][len(mips[mip]['ext_probe'])+uuid_length:]#seq
+                        fasta_2_lines[3] = fasta_2_lines[3][len(mips[mip]['ext_probe'])+uuid_length:]#qual
 
                         ## Print fastq to new trimmed and dedupped fastq's.
                         write_f1.write(''.join(fasta_1_lines))

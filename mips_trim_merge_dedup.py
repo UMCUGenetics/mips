@@ -84,6 +84,7 @@ if __name__ == "__main__":
     parser.add_argument('-r1','--r1_fastq', type=str, help='R1 fastq', required=True, nargs='*')
     parser.add_argument('-r2','--r2_fastq', type=str, help='R2 fastq', required=True, nargs='*')
     parser.add_argument('-l','--uuid_length', type=int, help='UUID length', required=True)
+    parser.add_argument('-ur','--uuid_read', type=str, help='Read containing UUID', choices=['R1','R2'], required=True)
     args = parser.parse_args()
 
     mips = parse_design(args.design_file)
@@ -116,34 +117,67 @@ if __name__ == "__main__":
                 for fastq_1_lines, fastq_2_lines in izip(grouper(f1, 4, ''), grouper(f2, 4, '')):
                     total += 1
                     for mip in mips:
-                        if fastq_2_lines[1].startswith(mips[mip]['ext_probe'],args.uuid_length) and fastq_1_lines[1].startswith(mips[mip]['lig_probe_revcom']):
-                            match += 1
-                            uuid = fastq_2_lines[1][0:args.uuid_length]
-                            # Check duplicate reads, uuid must be unique per mip.
-                            if uuid in mips[mip]['uuids']:
-                                duplicate += 1
-                                mips[mip]['dup_count'] += 1
-                            else :
-                                mips[mip]['uuids'].add(uuid)
-                                mips[mip]['count'] += 1
-                                #Trim fastq
-                                fastq_1_lines = list(fastq_1_lines)
-                                fastq_2_lines = list(fastq_2_lines)
 
-                                fastq_1_lines[1] = fastq_1_lines[1][len(mips[mip]['lig_probe_revcom']):]#seq
-                                fastq_1_lines[3] = fastq_1_lines[3][len(mips[mip]['lig_probe_revcom']):]#qual
+                        if args.uuid_read == 'R1':
+                            if fastq_2_lines[1].startswith(mips[mip]['ext_probe']) and fastq_1_lines[1].startswith(mips[mip]['lig_probe_revcom'],args.uuid_length):
+                                match += 1
+                                uuid = fastq_1_lines[1][0:args.uuid_length]
+                                # Check duplicate reads, uuid must be unique per mip.
+                                if uuid in mips[mip]['uuids']:
+                                    duplicate += 1
+                                    mips[mip]['dup_count'] += 1
+                                else :
+                                    mips[mip]['uuids'].add(uuid)
+                                    mips[mip]['count'] += 1
+                                    #Trim fastq
+                                    fastq_1_lines = list(fastq_1_lines)
+                                    fastq_2_lines = list(fastq_2_lines)
 
-                                fastq_2_lines[1] = fastq_2_lines[1][len(mips[mip]['ext_probe'])+5:]#seq
-                                fastq_2_lines[3] = fastq_2_lines[3][len(mips[mip]['ext_probe'])+5:]#qual
+                                    fastq_1_lines[1] = fastq_1_lines[1][len(mips[mip]['lig_probe_revcom'])+args.uuid_length:]#seq
+                                    fastq_1_lines[3] = fastq_1_lines[3][len(mips[mip]['lig_probe_revcom'])+args.uuid_length:]#qual
 
-                                ## Print fastq to new trimmed and dedupped fastq's.
-                                write_f1.write(''.join(fastq_1_lines))
-                                write_f2.write(''.join(fastq_2_lines))
+                                    fastq_2_lines[1] = fastq_2_lines[1][len(mips[mip]['ext_probe']):]#seq
+                                    fastq_2_lines[3] = fastq_2_lines[3][len(mips[mip]['ext_probe']):]#qual
 
-                            #Track unique uuids in sample
-                            if uuid not in unique_uuids:
-                                unique_uuids.add(uuid)
-                            break #A read can only belong to one mip thus break.
+                                    ## Print fastq to new trimmed and dedupped fastq's.
+                                    write_f1.write(''.join(fastq_1_lines))
+                                    write_f2.write(''.join(fastq_2_lines))
+
+                                #Track unique uuids in sample
+                                if uuid not in unique_uuids:
+                                    unique_uuids.add(uuid)
+                                break #A read can only belong to one mip thus break.
+
+                        if args.uuid_read == 'R2':
+                            if fastq_2_lines[1].startswith(mips[mip]['ext_probe'],args.uuid_length) and fastq_1_lines[1].startswith(mips[mip]['lig_probe_revcom']):
+                                match += 1
+                                uuid = fastq_2_lines[1][0:args.uuid_length]
+                                # Check duplicate reads, uuid must be unique per mip.
+                                if uuid in mips[mip]['uuids']:
+                                    duplicate += 1
+                                    mips[mip]['dup_count'] += 1
+                                else :
+                                    mips[mip]['uuids'].add(uuid)
+                                    mips[mip]['count'] += 1
+                                    #Trim fastq
+                                    fastq_1_lines = list(fastq_1_lines)
+                                    fastq_2_lines = list(fastq_2_lines)
+
+                                    fastq_1_lines[1] = fastq_1_lines[1][len(mips[mip]['lig_probe_revcom']):]#seq
+                                    fastq_1_lines[3] = fastq_1_lines[3][len(mips[mip]['lig_probe_revcom']):]#qual
+
+                                    fastq_2_lines[1] = fastq_2_lines[1][len(mips[mip]['ext_probe'])+args.uuid_length:]#seq
+                                    fastq_2_lines[3] = fastq_2_lines[3][len(mips[mip]['ext_probe'])+args.uuid_length:]#qual
+
+                                    ## Print fastq to new trimmed and dedupped fastq's.
+                                    write_f1.write(''.join(fastq_1_lines))
+                                    write_f2.write(''.join(fastq_2_lines))
+
+                                #Track unique uuids in sample
+                                if uuid not in unique_uuids:
+                                    unique_uuids.add(uuid)
+                                break #A read can only belong to one mip thus break.
+
 
     print 'match:', match
     print 'duplicate', duplicate
