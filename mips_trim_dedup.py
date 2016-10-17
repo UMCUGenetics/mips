@@ -82,11 +82,11 @@ if __name__ == "__main__":
 
     design_file = sys.argv[1]
     mips = parse_design(design_file)
-    uuid_length = sys.argv[2]
+    uuid_length = int(sys.argv[2])
 
     fasta_1_file = sys.argv[3]
     fasta_2_file = sys.argv[4]
-
+    
     fasta_1_file_out = fasta_1_file.split('/')
     fasta_1_file_out = "trimmed-dedup-"+fasta_1_file_out[-1]
     fasta_2_file_out = fasta_2_file.split('/')
