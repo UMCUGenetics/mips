@@ -8,8 +8,8 @@ import glob
 
 if __name__ == "__main__":
     # Parse arguments
-    if len(sys.argv) != 5:
-        print "python qsub_mips_trim_dedup.py /path/to/design.txt uuid_length uuid_read(R1,R2) /path/to/raw_data/sequencer/run/Unaligned/project /path/to/output/folder"
+    if len(sys.argv) != 6:
+        print "python qsub_sample_dirs_mips_trim_dedup.py /path/to/design.txt uuid_length uuid_read(R1,R2) /path/to/raw_data/sequencer/run/Unaligned/project /path/to/output/folder"
         sys.exit()
 
     design_file = os.path.abspath(sys.argv[1])
@@ -38,7 +38,7 @@ if __name__ == "__main__":
         log_file = "{0}/{1}.log".format(output_dir, sample_dir)
 
         # Generate command and submit to cluster
-        command = "python {0}/mips_trim_merge_dedup.py --design_file {1} --uuid_length {2} --uuid_read {3} -r1 {4} -r2 {5}".format(
+        command = "python {0}/mips_trim_dedup.py --design_file {1} --uuid_length {2} --uuid_read {3} -r1 {4} -r2 {5}".format(
             mips_trim_dedup_path,
             design_file,
             uuid_length,

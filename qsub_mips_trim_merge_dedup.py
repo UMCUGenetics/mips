@@ -14,7 +14,7 @@ def find_fastq(fastq_pattern, raw_data_dir):
 if __name__ == "__main__":
     # Parse arguments
     if len(sys.argv) != 6:
-        print "python qsub_mips_trim_dedup.py /path/to/design.txt uuid_length uuid_read(R1,R2) /path/to/raw_data/sequencer/run/Data/Intensities/BaseCalls /path/to/output/folder"
+        print "python qsub_mips_trim_merge_dedup.py /path/to/design.txt uuid_length uuid_read(R1,R2) /path/to/raw_data/sequencer/run/Data/Intensities/BaseCalls /path/to/output/folder"
         sys.exit()
 
     design_file = os.path.abspath(sys.argv[1])
@@ -46,7 +46,7 @@ if __name__ == "__main__":
         mips_trim_dedup_path = os.path.dirname(os.path.realpath(__file__))
 
         # Generate command and submit to cluster
-        command = "python {0}/mips_trim_merge_dedup.py --design_file {1} --uuid_length {2} --uuid_read {3} -r1 {4} -r2 {5}".format(
+        command = "python {0}/mips_trim_dedup.py --design_file {1} --uuid_length {2} --uuid_read {3} -r1 {4} -r2 {5}".format(
             mips_trim_dedup_path,
             design_file,
             uuid_length,
