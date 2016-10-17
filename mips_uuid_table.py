@@ -37,14 +37,3 @@ if __name__ == "__main__":
     print("UUID\tUUID_Count")
     for uuid in uuid_data:
         print('{}\t{}'.format(uuid, uuid_data[uuid]))
-    # ## Print log table to stdout
-    # print('MIP_Name', end="\t")
-    # for sample in samples:
-    #     print('{0}-read_count\t{0}-dup_count'.format(sample), end="\t")
-    # print(' ')
-    #
-    # for mip in mips_data.keys():
-    #     print(mip, end="\t")
-    #     for sample in samples:
-    #         print('{0}\t{1}'.format(mips_data[mip][sample]['read_count'], mips_data[mip][sample]['dup_count']), end="\t")
-    #     print(' ')
