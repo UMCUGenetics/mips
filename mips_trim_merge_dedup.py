@@ -76,7 +76,6 @@ class FixedGzip(gzip.GzipFile):
         self.close()
 
 if __name__ == "__main__":
-
     # Parse arguments
     parser = argparse.ArgumentParser(formatter_class=lambda prog: argparse.HelpFormatter(prog,max_help_position=100, width=200),
     description = 'Trim, merge and dedup fastq files from mips experiment. Assumes fastq naming convention: sample_flowcell_index_lane_R[12]_tag.fastq.gz and fastq files from one sample.')
@@ -87,13 +86,19 @@ if __name__ == "__main__":
     parser.add_argument('-ur','--uuid_read', type=str, help='Read containing UUID', choices=['R1','R2'], required=True)
     args = parser.parse_args()
 
+    # Check input fastq's
+    if len(args.r1_fastq) != len(args.r2_fastq):
+        parser.error("Arguments -r1/--r1_fastq and -r2/--r2_fastq should be of equal length.")
+
     mips = parse_design(args.design_file)
     unique_uuids = set({})
+
     #Output files
     fastq_1_file_out = "trimmed-dedup-"+args.r1_fastq[0].split('/')[-1]
     fastq_2_file_out = "trimmed-dedup-"+args.r2_fastq[0].split('/')[-1]
-    fastq_1_file_out = re.sub('_L\d{3}_','_LMerged_',fastq_1_file_out)
-    fastq_2_file_out = re.sub('_L\d{3}_','_LMerged_',fastq_2_file_out)
+    if len(args.r1_fastq) > 1 and len(args.r2_fastq) > 1: #Multiple fastq's -> merge
+        fastq_1_file_out = re.sub('_L\d{3}_','_LMerged_',fastq_1_file_out)
+        fastq_2_file_out = re.sub('_L\d{3}_','_LMerged_',fastq_2_file_out)
 
     with contextlib.nested(
         FixedGzip(fastq_1_file_out, 'w'),
