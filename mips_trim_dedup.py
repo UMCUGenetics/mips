@@ -108,6 +108,7 @@ if __name__ == "__main__":
         # Statistics variables
         total = 0
         match = 0
+        n_count = 0
         duplicate = 0
 
         #Loop over fastq files
@@ -127,11 +128,15 @@ if __name__ == "__main__":
                             if fastq_2_lines[1].startswith(mips[mip]['ext_probe']) and fastq_1_lines[1].startswith(mips[mip]['lig_probe_revcom'],args.uuid_length):
                                 match += 1
                                 uuid = fastq_1_lines[1][0:args.uuid_length]
+                                #skip uuid containing 'N'
+                                if "N" in uuid.upper():
+                                    n_count += 1
+                                    break
                                 # Check duplicate reads, uuid must be unique per mip.
-                                if uuid in mips[mip]['uuids']:
+                                elif uuid in mips[mip]['uuids']:
                                     duplicate += 1
                                     mips[mip]['dup_count'] += 1
-                                else :
+                                else:
                                     mips[mip]['uuids'].add(uuid)
                                     mips[mip]['count'] += 1
                                     #Trim fastq
@@ -157,11 +162,15 @@ if __name__ == "__main__":
                             if fastq_2_lines[1].startswith(mips[mip]['ext_probe'],args.uuid_length) and fastq_1_lines[1].startswith(mips[mip]['lig_probe_revcom']):
                                 match += 1
                                 uuid = fastq_2_lines[1][0:args.uuid_length]
+                                #skip uuid containing 'N' or 'n'
+                                if "N" in uuid.upper():
+                                    n_count += 1
+                                    break
                                 # Check duplicate reads, uuid must be unique per mip.
-                                if uuid in mips[mip]['uuids']:
+                                elif uuid in mips[mip]['uuids']:
                                     duplicate += 1
                                     mips[mip]['dup_count'] += 1
-                                else :
+                                else:
                                     mips[mip]['uuids'].add(uuid)
                                     mips[mip]['count'] += 1
                                     #Trim fastq
@@ -183,12 +192,12 @@ if __name__ == "__main__":
                                     unique_uuids.add(uuid)
                                 break #A read can only belong to one mip thus break.
 
-
-    print 'match:', match
-    print 'duplicate', duplicate
-    print 'total', total
+    print 'Match with mip:', match,
+    print 'Reads with N in uuid', n_count,
+    print 'Duplicate reads', duplicate,
+    print 'total reads', total
     print 'sample_unique_uuid_count', len(unique_uuids)
 
-    print 'mip\tread_count\tdup_count\tuuids'
+    print 'mip\tuniqe_read_count\tdup_count\tuuids'
     for mip in mips:
         print '{0}\t{1}\t{2}\t{3}'.format(mip, mips[mip]['count'], mips[mip]['dup_count'], ','.join(mips[mip]['uuids']))

@@ -23,7 +23,7 @@ if __name__ == "__main__":
             sample = log_file[:-4]
             samples.append(sample)
             with open(log_file_path, 'r') as f:
-                log_data = f.read().split('\n')[5:]
+                log_data = f.read().split('\n')[6:]
                 for mip_data in log_data:
                     mip_data = mip_data.split('\t')
                     if len(mip_data) != 4:
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     ## Print log table to stdout
     print('MIP_Name', end="\t")
     for sample in samples:
-        print('{0}-read_count\t{0}-dup_count'.format(sample), end="\t")
+        print('{0}-unique_read_count\t{0}-dup_count'.format(sample), end="\t")
     print(' ')
 
     for mip in mips_data.keys():

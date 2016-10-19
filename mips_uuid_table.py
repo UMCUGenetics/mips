@@ -20,7 +20,7 @@ if __name__ == "__main__":
         if log_file.endswith('.log'):
             log_file_path = '{0}/{1}'.format(log_dir,log_file)
             with open(log_file_path, 'r') as f:
-                log_data = f.read().split('\n')[4:]
+                log_data = f.read().split('\n')[6:]
                 for mip_data in log_data:
                     mip_data = mip_data.split('\t')
                     if len(mip_data) != 4:

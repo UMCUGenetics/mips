@@ -19,8 +19,8 @@ if __name__ == "__main__":
     design_file = os.path.abspath(sys.argv[1])
     uuid_length = int(sys.argv[2])
     uuid_read = sys.argv[3]
-    raw_data_dir = sys.argv[3]
-    output_dir = sys.argv[4]
+    raw_data_dir = sys.argv[4]
+    output_dir = sys.argv[5]
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
