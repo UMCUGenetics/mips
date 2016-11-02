@@ -192,9 +192,9 @@ if __name__ == "__main__":
                                     unique_uuids.add(uuid)
                                 break #A read can only belong to one mip thus break.
 
-    print 'Match with mip:', match,
-    print 'Reads with N in uuid', n_count,
-    print 'Duplicate reads', duplicate,
+    print 'Match with mip:', match
+    print 'Reads with N in uuid', n_count
+    print 'Duplicate reads', duplicate
     print 'total reads', total
     print 'sample_unique_uuid_count', len(unique_uuids)
 
