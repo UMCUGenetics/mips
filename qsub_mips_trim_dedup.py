@@ -35,8 +35,8 @@ if __name__ == "__main__":
     # Trim and dedup per sample
     for sample in samples:
         log_file = "{0}/{1}.log".format(output_dir, sample)
-        r1_fastq = find_fastq("{0}*_R1_*.fastq.gz".format(sample),raw_data_dir)
-        r2_fastq = find_fastq("{0}*_R2_*.fastq.gz".format(sample),raw_data_dir)
+        r1_fastq = find_fastq("{0}_*_R1_*.fastq.gz".format(sample),raw_data_dir)
+        r2_fastq = find_fastq("{0}_*_R2_*.fastq.gz".format(sample),raw_data_dir)
 
         mips_trim_dedup_path = os.path.dirname(os.path.realpath(__file__))
 

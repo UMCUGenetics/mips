@@ -39,7 +39,7 @@ if __name__ == "__main__":
         r1_fastq_paths = []
         r2_fastq_paths = []
         #find lanes
-        for r1_fastq in glob.glob('{0}/{1}*R1_*.fastq.gz'.format(raw_data_dir,sample)):
+        for r1_fastq in glob.glob('{0}/{1}_*R1_*.fastq.gz'.format(raw_data_dir,sample)):
             r1_fastq_paths.append(os.path.abspath(r1_fastq))
             r2_fastq_paths.append(os.path.abspath(r1_fastq).replace('_R1_','_R2_'))
 
