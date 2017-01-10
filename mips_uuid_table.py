@@ -1,10 +1,11 @@
 #!/usr/bin/env python
+
+
 from __future__ import print_function
 
 import sys
 import os
-import fnmatch
-import subprocess
+
 
 if __name__ == "__main__":
     # Parse arguments
@@ -18,7 +19,7 @@ if __name__ == "__main__":
     # Open log files and store in dict
     for log_file in os.listdir(log_dir):
         if log_file.endswith('.log'):
-            log_file_path = '{0}/{1}'.format(log_dir,log_file)
+            log_file_path = '{0}/{1}'.format(log_dir, log_file)
             with open(log_file_path, 'r') as f:
                 log_data = f.read().split('\n')[6:]
                 for mip_data in log_data:

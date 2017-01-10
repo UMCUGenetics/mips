@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
+
 import sys
 import os
-import fnmatch
 import subprocess
 import glob
 
@@ -33,7 +33,7 @@ if __name__ == "__main__":
         # Find lanes
         for r1_fastq in glob.glob('{0}/*R1_*.fastq.gz'.format(sample_dir_path)):
             r1_fastq_paths.append(os.path.abspath(r1_fastq))
-            r2_fastq_paths.append(os.path.abspath(r1_fastq).replace('_R1_','_R2_'))
+            r2_fastq_paths.append(os.path.abspath(r1_fastq).replace('_R1_', '_R2_'))
 
         log_file = "{0}/{1}.log".format(output_dir, sample_dir)
 

@@ -1,10 +1,11 @@
 #!/usr/bin/env python
+
+
 from __future__ import print_function
 
 import sys
 import os
-import fnmatch
-import subprocess
+
 
 if __name__ == "__main__":
     # Parse arguments
@@ -19,7 +20,7 @@ if __name__ == "__main__":
     # Open log files and store in dict
     for log_file in os.listdir(log_dir):
         if log_file.endswith('.log'):
-            log_file_path = '{0}/{1}'.format(log_dir,log_file)
+            log_file_path = '{0}/{1}'.format(log_dir, log_file)
             sample = log_file[:-4]
             samples.append(sample)
             with open(log_file_path, 'r') as f:
@@ -34,7 +35,7 @@ if __name__ == "__main__":
                         dup_count = mip_data[2]
                         if mip_name not in mips_data.keys():
                             mips_data[mip_name] = {}
-                        mips_data[mip_name][sample] = {'read_count':read_count,'dup_count':dup_count}
+                        mips_data[mip_name][sample] = {'read_count': read_count, 'dup_count': dup_count}
 
     ## Print log table to stdout
     print('MIP_Name', end="\t")

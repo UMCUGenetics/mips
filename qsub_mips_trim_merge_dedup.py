@@ -6,10 +6,12 @@ import fnmatch
 import subprocess
 import glob
 
+
 def find_fastq(fastq_pattern, raw_data_dir):
     for file in os.listdir(raw_data_dir):
         if fnmatch.fnmatch(file, fastq_pattern):
             return os.path.abspath('{0}/{1}'.format(raw_data_dir, file))
+
 
 if __name__ == "__main__":
     # Parse arguments
@@ -38,10 +40,10 @@ if __name__ == "__main__":
         log_file = "{0}/{1}.log".format(output_dir, sample)
         r1_fastq_paths = []
         r2_fastq_paths = []
-        #find lanes
-        for r1_fastq in glob.glob('{0}/{1}_*R1_*.fastq.gz'.format(raw_data_dir,sample)):
+        # find lanes
+        for r1_fastq in glob.glob('{0}/{1}_*R1_*.fastq.gz'.format(raw_data_dir, sample)):
             r1_fastq_paths.append(os.path.abspath(r1_fastq))
-            r2_fastq_paths.append(os.path.abspath(r1_fastq).replace('_R1_','_R2_'))
+            r2_fastq_paths.append(os.path.abspath(r1_fastq).replace('_R1_', '_R2_'))
 
         mips_trim_dedup_path = os.path.dirname(os.path.realpath(__file__))
 
