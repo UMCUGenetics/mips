@@ -85,7 +85,7 @@ if __name__ == "__main__":
     parser.add_argument('-d', '--design_file', type=str, help='Mips design file', required=True)
     parser.add_argument('-r1', '--r1_fastq', type=str, help='R1 fastq', required=True, nargs='*')
     parser.add_argument('-r2', '--r2_fastq', type=str, help='R2 fastq', required=True, nargs='*')
-    parser.add_argument('-l',' --uuid_length', type=int, help='UUID length', required=True)
+    parser.add_argument('-l', '--uuid_length', type=int, help='UUID length', required=True)
     parser.add_argument('-ur', '--uuid_read', type=str, help='Read containing UUID', choices=['R1', 'R2'], required=True)
     args = parser.parse_args()
 
