@@ -10,9 +10,7 @@ import contextlib
 
 
 def reverse_complement(seq):
-    """
-    Return reverse complement of a dna sequence.
-    """
+    """Return reverse complement of a dna sequence."""
     bases_dict = {
         'A': 'T', 'a': 't',
         'C': 'G', 'g': 'c',
@@ -22,9 +20,7 @@ def reverse_complement(seq):
 
 
 def parse_design(design_file):
-    """
-    Parse design file and return mips dictonary.
-    """
+    """Parse design file and return mips dictonary."""
     mips = {}
     with open(design_file, 'r') as f:
         header = f.readline().strip('\n').split('\t')
@@ -81,7 +77,7 @@ class FixedGzip(gzip.GzipFile):
 if __name__ == "__main__":
     # Parse arguments
     parser = argparse.ArgumentParser(formatter_class=lambda prog: argparse.HelpFormatter(prog, max_help_position=100, width=200),
-    description = 'Trim, merge and dedup fastq files from mips experiment. Assumes fastq naming convention: sample_flowcell_index_lane_R[12]_tag.fastq.gz and fastq files from one sample.')
+    description='Trim, merge and dedup fastq files from mips experiment. Assumes fastq naming convention: sample_flowcell_index_lane_R[12]_tag.fastq.gz and fastq files from one sample.')
     parser.add_argument('-d', '--design_file', type=str, help='Mips design file', required=True)
     parser.add_argument('-r1', '--r1_fastq', type=str, help='R1 fastq', required=True, nargs='*')
     parser.add_argument('-r2', '--r2_fastq', type=str, help='R2 fastq', required=True, nargs='*')
@@ -97,8 +93,9 @@ if __name__ == "__main__":
     unique_uuids = set({})
 
     # Output files
-    fastq_1_file_out = "trimmed-dedup-"+args.r1_fastq[0].split('/')[-1]
-    fastq_2_file_out = "trimmed-dedup-"+args.r2_fastq[0].split('/')[-1]
+    fastq_1_file_out = "{sample_name}-trimmed-dedup".format(sample_name=args.r1_fastq[0].split('/')[-1])
+    fastq_2_file_out = "{sample_name}-trimmed-dedup".format(sample_name=args.r2_fastq[0].split('/')[-1])
+
     if len(args.r1_fastq) > 1 and len(args.r2_fastq) > 1:  # Multiple fastq's -> merge
         fastq_1_file_out = re.sub('_L\d{3}_', '_LMerged_', fastq_1_file_out)
         fastq_2_file_out = re.sub('_L\d{3}_', '_LMerged_', fastq_2_file_out)
