@@ -93,12 +93,12 @@ if __name__ == "__main__":
     unique_uuids = set({})
 
     # Output files
-    fastq_1_file_out = "{sample_name}-trimmed-dedup".format(sample_name=args.r1_fastq[0].split('/')[-1])
-    fastq_2_file_out = "{sample_name}-trimmed-dedup".format(sample_name=args.r2_fastq[0].split('/')[-1])
+    fastq_1_file_out = args.r1_fastq[0].split('/')[-1]
+    fastq_2_file_out = args.r2_fastq[0].split('/')[-1]
 
     if len(args.r1_fastq) > 1 and len(args.r2_fastq) > 1:  # Multiple fastq's -> merge
-        fastq_1_file_out = re.sub('_L\d{3}_', '_LMerged_', fastq_1_file_out)
-        fastq_2_file_out = re.sub('_L\d{3}_', '_LMerged_', fastq_2_file_out)
+        fastq_1_file_out = re.sub('_L\d{3}_', '_LMergedTrimmedDedup_', fastq_1_file_out)
+        fastq_2_file_out = re.sub('_L\d{3}_', '_LMergedTrimmedDedup_', fastq_2_file_out)
 
     with contextlib.nested(
         FixedGzip(fastq_1_file_out, 'w'),
