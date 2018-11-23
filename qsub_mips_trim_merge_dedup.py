@@ -8,7 +8,7 @@ import glob
 
 
 def find_fastq(fastq_pattern, raw_data_dir):
-    for file in os.listdir(raw_data_dir):
+    for file in sorted(os.listdir(raw_data_dir)):
         if fnmatch.fnmatch(file, fastq_pattern):
             return os.path.abspath('{0}/{1}'.format(raw_data_dir, file))
 
@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     # Find all samples in raw data dir
     samples = set([])
-    for file in os.listdir(raw_data_dir):
+    for file in sorted(os.listdir(raw_data_dir)):
         if file.endswith(".fastq.gz"):
             sample = file.split('_')[0]
             samples.add(sample)
@@ -41,7 +41,7 @@ if __name__ == "__main__":
         r1_fastq_paths = []
         r2_fastq_paths = []
         # find lanes
-        for r1_fastq in glob.glob('{0}/{1}_*R1_*.fastq.gz'.format(raw_data_dir, sample)):
+        for r1_fastq in sorted(glob.glob('{0}/{1}_*R1_*.fastq.gz'.format(raw_data_dir, sample))):
             r1_fastq_paths.append(os.path.abspath(r1_fastq))
             r2_fastq_paths.append(os.path.abspath(r1_fastq).replace('_R1_', '_R2_'))
 
