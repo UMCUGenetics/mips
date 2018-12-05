@@ -17,7 +17,7 @@ if __name__ == "__main__":
     uuid_data = {}
 
     # Open log files and store in dict
-    for log_file in os.listdir(log_dir):
+    for log_file in sorted(os.listdir(log_dir)):
         if log_file.endswith('.log'):
             log_file_path = '{0}/{1}'.format(log_dir, log_file)
             with open(log_file_path, 'r') as f:

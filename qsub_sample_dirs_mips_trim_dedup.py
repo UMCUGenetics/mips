@@ -24,14 +24,14 @@ if __name__ == "__main__":
         os.makedirs(output_dir)
 
     # Trim and dedup per sample
-    for sample_dir in os.listdir(raw_data_dir):
+    for sample_dir in sorted(os.listdir(raw_data_dir)):
         sample_dir_path = raw_data_dir + "/" + sample_dir
 
         r1_fastq_paths = []
         r2_fastq_paths = []
 
         # Find lanes
-        for r1_fastq in glob.glob('{0}/*R1_*.fastq.gz'.format(sample_dir_path)):
+        for r1_fastq in sorted(glob.glob('{0}/*R1_*.fastq.gz'.format(sample_dir_path))):
             r1_fastq_paths.append(os.path.abspath(r1_fastq))
             r2_fastq_paths.append(os.path.abspath(r1_fastq).replace('_R1_', '_R2_'))
 
